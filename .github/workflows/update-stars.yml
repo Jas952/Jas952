@@ -18,9 +18,12 @@ jobs:
       - run: python scripts/render_card.py --live --animate
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Commit updated card
+      - run: python scripts/render_maccleaner.py --live
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Commit updated cards
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add assets/agent-observer-card.svg assets/agent-observer-card.webp assets/agent-observer-card.png
-          git diff --cached --quiet || (git commit -m 'Update Agent Observer card' && git push)
+          git add assets/agent-observer-card.svg assets/agent-observer-card.webp assets/agent-observer-card.png assets/maccleaner-card.svg assets/maccleaner-card.webp assets/maccleaner-card.png
+          git diff --cached --quiet || (git commit -m 'Update project cards' && git pull --rebase && git push)
