@@ -91,7 +91,7 @@ def legend(date,data,counts,light):
     for i,(n,c,_) in enumerate(GROUPS):
         v=counts[i];pct=100*v/max(1,total);y=321+i*88
         s.extend([f'<circle cx="56" cy="{y-9}" r="9" fill="{c}"/>',f'<text x="83" y="{y}" fill="{fg}" font-size="32" font-weight="500">{escape(n)}</text>',f'<text x="950" y="{y}" text-anchor="end" font-size="32" fill="{fg}">{pct:.1f}%</text>',f'<text x="83" y="{y+29}" font-size="23" fill="{muted}">{v:,} commits</text>'])
-    s += [f'<path d="M45 654H950" stroke="{rule}" stroke-width="2"/>',f'<text x="45" y="692" fill="{muted}" font-size="23">{len(data)} public repos · 1 particle = 1 commit</text>',f'<text x="45" y="725" fill="{muted}" font-size="19">Updated {date} · default branches</text></g></svg>']
+    s += [f'<path d="M45 654H950" stroke="{rule}" stroke-width="2"/>',f'<text x="45" y="692" fill="{muted}" font-size="23">{len(data)} public repositories</text>',f'<text x="45" y="725" fill="{muted}" font-size="19">Updated {date} · default branches</text></g></svg>']
     (OUT/f'legend-{"light" if light else "dark"}.svg').write_text(''.join(s))
 
 if __name__=='__main__':
