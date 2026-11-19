@@ -1,12 +1,12 @@
 <p align="center">
-  <img src="assets/fingerprint/commit-cloud.webp"
+  <img src="assets/fingerprint/commit-cloud.webp?v=2"
        width="37%" align="middle">
   <picture>
     <source media="(prefers-color-scheme: dark)"
-            srcset="assets/fingerprint/legend-dark.svg">
+            srcset="assets/fingerprint/legend-dark.svg?v=2">
     <source media="(prefers-color-scheme: light)"
-            srcset="assets/fingerprint/legend-light.svg">
-    <img src="assets/fingerprint/legend-dark.svg"
+            srcset="assets/fingerprint/legend-light.svg?v=2">
+    <img src="assets/fingerprint/legend-dark.svg?v=2"
          width="48%" align="middle">
   </picture>
 </p>
