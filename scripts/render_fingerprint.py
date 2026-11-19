@@ -5,7 +5,7 @@ import numpy as np
 from PIL import Image, ImageDraw
 OUT=Path(__file__).resolve().parents[1]/'assets/fingerprint'; USER='Jas952'
 GROUPS=[('AI Agent Systems','#719FDF',['agent-observer','openclaw-my-setup','codex-status-bar']),('Native & Browser Apps','#65C0A4',['MacCleaner','BrowserMonitor','DockShelf']),('Data & Monitoring','#D7B16F',['aggregator-AI-news','flashnet-market-monitor','dashboard-servers']),('Other Projects','#AE91CF',[])]
-SIZE=800; FPS=50; SECONDS=12; FRAMES=FPS*SECONDS
+SIZE=800; FPS=60; SECONDS=12; FRAMES=FPS*SECONDS
 
 def pages(path,params):
     for page in range(1,10001):
@@ -82,7 +82,7 @@ def animate(p):
     body=[chunk(b'VP8X',b'\x12\0\0\0'+u24(SIZE-1)+u24(SIZE-1)),chunk(b'ANIM',b'\0'*6)]
     for i in range(FRAMES):
         im=frame(p,math.tau*i/FRAMES)
-        body.append(chunk(b'ANMF',u24(0)+u24(0)+u24(SIZE-1)+u24(SIZE-1)+u24(1000//FPS)+b'\x02'+payload(im)))
+        body.append(chunk(b'ANMF',u24(0)+u24(0)+u24(SIZE-1)+u24(SIZE-1)+u24(round((i+1)*1000/FPS)-round(i*1000/FPS))+b'\x02'+payload(im)))
     data=b'WEBP'+b''.join(body);(OUT/'commit-cloud.webp').write_bytes(b'RIFF'+struct.pack('<I',len(data))+data)
 
 def legend(date,data,counts,light):
