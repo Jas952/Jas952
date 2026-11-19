@@ -26,3 +26,4 @@
 </div>
 
 <a href="https://github.com/Jas952/agent-observer"><img src="assets/agent-observer-card.webp?v=6" width="49%" alt="Agent Observer — visual analysis of AI agent activity"></a>
+<a href="https://github.com/Jas952/MacCleaner"><img src="assets/maccleaner-card.webp" width="49%" alt="MacCleaner"></a>
