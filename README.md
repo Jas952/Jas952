@@ -1,10 +1,10 @@
-<div>
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="assets/profile-intro-dark.svg">
-    <source media="(prefers-color-scheme: light)" srcset="assets/profile-intro-light.svg">
-    <img src="assets/profile-intro-dark.svg" width="100%" alt="Exploring agent workflows beyond the interface. I research, experiment and build tools that make agent workflows, decisions and system interactions more transparent and understandable. Research focus: Agent Observability, Tool Execution, Memory &amp; Context, Requests, Local Systems.">
-  </picture>
-</div>
+<p align="center"><img src="assets/fingerprint/commit-cloud.webp" width="43%" align="middle" alt="Rotating 3D commit particle cloud"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/fingerprint/legend-dark.svg"><source media="(prefers-color-scheme: light)" srcset="assets/fingerprint/legend-light.svg"><img src="assets/fingerprint/legend-dark.svg" width="55%" align="middle" alt="Development fingerprint: commits and category distribution"></picture></p>
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/fingerprint/research-focus-dark.svg">
+  <source media="(prefers-color-scheme: light)" srcset="assets/fingerprint/research-focus-light.svg">
+  <img src="assets/fingerprint/research-focus-dark.svg" width="100%" alt="Research focus: Agent Observability, Tool Execution, Memory &amp; Context, Requests, Local Systems">
+</picture>
 
 <div>
   <picture>
