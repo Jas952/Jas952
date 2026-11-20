@@ -29,7 +29,7 @@ def fetch():
     return now.date().isoformat(),data
 
 def snapshot():
-    counts={'agent-observer':63,'MacCleaner':66,'BrowserMonitor':62,'DockShelf':22,'codex-status-bar':24,'openclaw-my-setup':24,'aggregator-AI-news':7,'flashnet-market-monitor':3,'dashboard-servers':9,'books-ai':24,'x-search':8,'llmcalculator_learning':3,'ai-search-for-go-profession':4,'deleter':15}
+    counts={'agent-observer':63,'MacCleaner':66,'BrowserMonitor':62,'DockShelf':22,'codex-status-bar':24,'aggregator-AI-news':7,'flashnet-market-monitor':3,'dashboard-servers':9,'books-ai':24,'x-search':8,'llmcalculator_learning':3,'ai-search-for-go-profession':4,'deleter':15}
     return '2026-11-19',{n:[f'{n}:{i}' for i in range(k)] for n,k in counts.items()}
 
 def particles(data):
@@ -85,6 +85,37 @@ def animate(p):
         body.append(chunk(b'ANMF',u24(0)+u24(0)+u24(SIZE-1)+u24(SIZE-1)+u24(round((i+1)*1000/FPS)-round(i*1000/FPS))+b'\x02'+payload(im)))
     data=b'WEBP'+b''.join(body);(OUT/'commit-cloud.webp').write_bytes(b'RIFF'+struct.pack('<I',len(data))+data)
 
+def animate_svg(p):
+    """Vector keyframes with native SMIL interpolation; no scripts in the SVG."""
+    K=96; D=SECONDS
+    samples=[]
+    for phase in np.linspace(0,math.tau,K+1):
+     a=phase+.65; co,si=math.cos(a),math.sin(a)
+     x=p[:,0]*co+p[:,2]*si;z=-p[:,0]*si+p[:,2]*co
+     tilt=.39; y=p[:,1]*math.cos(tilt)-z*math.sin(tilt);z=p[:,1]*math.sin(tilt)+z*math.cos(tilt)
+     persp=2.75/(2.75-z);t=np.clip((z+1)/2,0,1)
+     X=400+x*312*persp;Y=400-y*312*persp
+     R=(1.8+4.4*t)*persp; A=(40+215*t**1.12)/255
+     samples.append(np.stack((X,Y,R,A,z),axis=1))
+    s=np.array(samples);s[-1]=s[0]
+    fmt=lambda v: f'{v:.2f}'.rstrip('0').rstrip('.')
+    fmtop=lambda v: f'{v:.3f}'.rstrip('0').rstrip('.')
+    svg=['<svg xmlns="http://www.w3.org/2000/svg" width="800" height="800" viewBox="0 0 800 800" role="img" aria-label="Rotating three-dimensional development fingerprint">','<title>Development fingerprint</title>',f'<desc>{len(p)} commits grouped into four development categories. Twelve-second rotation.</desc>','<defs>']
+    for i,(_,color,_) in enumerate(GROUPS):
+     c=tuple(bytes.fromhex(color[1:])); hi='#'+''.join(f'{round(v+(255-v)*.35):02x}' for v in c)
+     svg.append(f'<radialGradient id="p{i}" cx="35%" cy="29%" r="74%"><stop stop-color="{hi}"/><stop offset=".46" stop-color="{color}"/><stop offset=".9" stop-color="{color}" stop-opacity=".85"/><stop offset="1" stop-color="{color}" stop-opacity=".45"/></radialGradient>')
+    svg.append('</defs>')
+    for i in np.argsort(s[0,:,4]):
+     a=s[:,i,:];k=int(p[i,3]); x,y,r,opacity,_=a[0]
+     svg.append(f'<circle cx="{fmt(x)}" cy="{fmt(y)}" r="{fmt(r)}" opacity="{fmtop(opacity)}" fill="url(#p{k})">')
+     for j,n in enumerate(['cx','cy','r','opacity']):
+      vals=';'.join((fmtop if j==3 else fmt)(v) for v in a[:,j]);svg.append(f'<animate attributeName="{n}" dur="{D}s" repeatCount="indefinite" calcMode="linear" values="{vals}"/>')
+     svg.append('</circle>')
+    svg.append('</svg>')
+    
+    (OUT/'commit-cloud.svg').write_text('\n'.join(svg),encoding='utf-8')
+
+
 def legend(date,data,counts,light):
     fg='#1f2328' if light else '#e6edf3';muted='#59636e' if light else '#8b949e';rule='#d0d7de' if light else '#30363d';total=sum(counts)
     s=[f'<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="750" viewBox="0 0 1000 750" role="img" aria-label="Development fingerprint: {total} commits by category"><g font-family="Inter,Arial,sans-serif">',f'<text x="45" y="64" fill="{muted}" font-size="26" letter-spacing="4">DEVELOPMENT FINGERPRINT</text>',f'<path d="M45 88H950" stroke="{rule}" stroke-width="2"/>',f'<text x="39" y="213" font-size="122" font-weight="600" fill="{fg}">{total:,}</text>',f'<text x="47" y="263" font-size="25" letter-spacing="4" fill="{muted}">COMMITS / LAST 12 MONTHS</text>']
@@ -95,9 +126,10 @@ def legend(date,data,counts,light):
     (OUT/f'legend-{"light" if light else "dark"}.svg').write_text(''.join(s))
 
 if __name__=='__main__':
-    ap=argparse.ArgumentParser();ap.add_argument('--live',action='store_true');ap.add_argument('--static',action='store_true');args=ap.parse_args();OUT.mkdir(parents=True,exist_ok=True)
+    ap=argparse.ArgumentParser();ap.add_argument('--live',action='store_true');ap.add_argument('--static',action='store_true',help='Skip regenerating the vector animation');ap.add_argument('--webp',action='store_true',help='Also regenerate the optional WebP fallback');args=ap.parse_args();OUT.mkdir(parents=True,exist_ok=True)
     date,data=fetch() if args.live else snapshot();p,counts=particles(data)
     for light in [False,True]:legend(date,data,counts,light)
     frame(p,0).save(OUT/'commit-cloud.png')
-    if not args.static:animate(p)
+    if not args.static:animate_svg(p)
+    if args.webp:animate(p)
     print('Counts:',counts,'total',sum(counts))
