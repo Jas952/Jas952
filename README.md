@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/fingerprint/commit-cloud.webp?v=2"
+  <img src="assets/fingerprint/commit-cloud.svg?v=2"
        width="37%" align="middle">
   <picture>
     <source media="(prefers-color-scheme: dark)"
